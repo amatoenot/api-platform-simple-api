@@ -6,6 +6,7 @@ use App\Repository\ReviewRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ApiResource]
@@ -16,6 +17,7 @@ class Review
     private Uuid $id;
 
     #[ORM\Column]
+    #[Assert\Range(min: 1, max: 5)]
     private int $rating;
 
     #[ORM\Column(length: 255)]

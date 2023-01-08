@@ -6,10 +6,40 @@ use App\Repository\ReviewRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Get;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Post()
+    ]
+)]
+#[ApiResource(
+    uriTemplate: '/books/{id}/reviews', 
+    uriVariables: [
+        'id' => new Link(
+            fromClass: Book::class,
+            toProperty: 'book'
+        )
+    ], 
+    operations: [
+        new GetCollection()
+    ]
+)]
+#[ApiResource(
+    uriTemplate: '/books/{bookId}/reviews/{id}', 
+    uriVariables: [
+        'bookId' => new Link(fromClass: Book::class, toProperty: 'book'),
+        'id' => new Link(fromClass: Review::class)
+    ], 
+    operations: [
+        new Get()
+    ]
+)]
 class Review
 {
     #[ORM\Id]

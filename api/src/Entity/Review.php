@@ -11,12 +11,13 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ApiResource(
     operations: [
         new Post()
-    ]
+    ],
 )]
 #[ApiResource(
     uriTemplate: '/books/{id}/reviews', 
@@ -28,7 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     ], 
     operations: [
         new GetCollection()
-    ]
+    ],
+    normalizationContext: ['groups' => ['read']],
 )]
 #[ApiResource(
     uriTemplate: '/books/{bookId}/reviews/{id}', 
@@ -38,7 +40,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     ], 
     operations: [
         new Get()
-    ]
+    ],
+    normalizationContext: ['groups' => ['read']],
 )]
 class Review
 {
@@ -48,9 +51,11 @@ class Review
 
     #[ORM\Column]
     #[Assert\Range(min: 1, max: 5)]
+    #[Groups(['read'])]
     private int $rating;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read'])]
     private string $reviewerName;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]

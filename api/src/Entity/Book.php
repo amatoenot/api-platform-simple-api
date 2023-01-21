@@ -9,9 +9,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class Book
 {
     #[ORM\Id]
@@ -19,15 +23,19 @@ class Book
     private Uuid $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private string $title;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['read', 'write'])]
     private DateTimeImmutable $publicatedAt;
 
     #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
+    #[Groups(['read', 'write'])]
     private Collection $authors;
 
     #[ORM\OneToMany(mappedBy: 'book', targetEntity: Review::class)]

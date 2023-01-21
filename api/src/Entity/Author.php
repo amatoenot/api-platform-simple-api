@@ -8,9 +8,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class Author
 {
     #[ORM\Id]
@@ -18,6 +22,7 @@ class Author
     private Uuid $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private string $name;
 
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'authors')]

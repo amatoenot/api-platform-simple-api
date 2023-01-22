@@ -23,6 +23,7 @@ class Book
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
+    #[Groups(['read'])]
     private Uuid $id;
 
     #[ORM\Column(length: 255)]
